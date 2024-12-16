@@ -1,128 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:go_router/go_router.dart';
-import 'package:walletar_lite/features/expenses/expenses_providers.dart';
+import 'package:walletar_lite/features/expenses/presentation/expense_list.dart';
+import 'package:walletar_lite/features/side_menu/presentation/side_menu.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final expensesAsync = ref.watch(expensesProvider);
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final GlobalKey<SliderDrawerState> _drawerKey =
+      GlobalKey<SliderDrawerState>();
+
+  String _title = 'WalletAR Lite - Home';
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('WalletAR Lite - Home'),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              // Cierre de sesión y redirección al login
-              context.go('/login');
-            },
-            icon: const Icon(Icons.logout),
-            tooltip: 'Cerrar sesión',
+      // appBar: AppBar(
+      //   title: const Text('WalletAR Lite | Home'),
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () async {
+      //         context.go('/login');
+      //       },
+      //       icon: const Icon(Icons.logout),
+      //       tooltip: 'Cerrar sesión',
+      //     ),
+      //   ],
+      // ),
+      body: SliderDrawer(
+        key: _drawerKey,
+        appBar: SliderAppBar(
+          appBarColor: Colors.white,
+          title: Text(
+            _title,
+            style: const TextStyle(color: Colors.black, fontSize: 22),
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: expensesAsync.when(
-          data: (expenses) {
-            if (expenses.isEmpty) {
-              return const Center(child: Text('No hay gastos registrados.'));
-            }
-            return ListView.builder(
-              itemCount: expenses.length,
-              itemBuilder: (context, index) {
-                final expense = expenses[index];
-                return ListTile(
-                  title: Text(expense['label'] ?? 'Sin etiqueta'),
-                  subtitle: Text('${expense['monto']} ${expense['moneda']}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      ref
-                          .read(firestoreServiceProvider)
-                          .deleteExpense(expense['id']);
-                    },
-                  ),
-                );
-              },
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text('Error: ${error.toString()}')),
+        ),
+        slider: Container(
+          color: Colors.white,
+          child: SideMenu(
+            onItemSelected: (item) {
+              setState(() {
+                _title = item;
+              });
+              if (item == 'Cerrar Sesión') {
+                context.go('/login');
+              }
+              _drawerKey.currentState?.closeSlider();
+            },
+          ),
+        ),
+        child: Container(
+          color: Colors.white,
+          child: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: ExpenseList(),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navegar a la pantalla para agregar un gasto
-          showDialog(
-            context: context,
-            builder: (context) => AddExpenseDialog(),
-          );
+          context.go('/add-expense');
         },
         child: const Icon(Icons.add),
       ),
-    );
-  }
-}
-
-class AddExpenseDialog extends ConsumerWidget {
-  AddExpenseDialog({Key? key}) : super(key: key);
-
-  final TextEditingController labelController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return AlertDialog(
-      title: const Text('Agregar Gasto'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: labelController,
-            decoration: const InputDecoration(labelText: 'Etiqueta'),
-          ),
-          TextField(
-            controller: amountController,
-            decoration: const InputDecoration(labelText: 'Monto'),
-            keyboardType: TextInputType.number,
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            final label = labelController.text.trim();
-            final amount = double.tryParse(amountController.text.trim()) ?? 0.0;
-
-            // if (label.isEmpty || amount <= 0) {
-            //   ScaffoldMessenger.of(context).showSnackBar(
-            //     const SnackBar(content: Text('Datos inválidos')),
-            //   );
-            //   return;
-            // }
-
-            final expense = {
-              'label': label,
-              'monto': amount,
-              'moneda': 'ARS', // Por ahora, fijamos la moneda
-              'created_at': DateTime.now().toIso8601String(),
-            };
-
-            await ref.read(firestoreServiceProvider).addExpense(expense);
-            Navigator.of(context).pop();
-          },
-          child: const Text('Agregar'),
-        ),
-      ],
     );
   }
 }

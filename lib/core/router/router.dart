@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walletar_lite/features/auth/auth_providers.dart';
 import 'package:walletar_lite/features/auth/presentation/login_screen.dart';
 import 'package:walletar_lite/features/auth/presentation/register_screen.dart';
+import 'package:walletar_lite/features/expenses/presentation/add_expense_screen.dart';
 import 'package:walletar_lite/features/home/presentation/home_screen.dart';
 
 final router = GoRouter(
@@ -19,6 +20,10 @@ final router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/add-expense',
+      builder: (context, state) => const AddExpenseScreen(),
     ),
   ],
   redirect: (context, state) {
