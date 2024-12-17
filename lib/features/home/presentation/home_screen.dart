@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
-import 'package:go_router/go_router.dart';
+import 'package:walletar_lite/features/home/widgets/home_header.dart';
 import 'package:walletar_lite/features/expenses/presentation/expense_list.dart';
 import 'package:walletar_lite/features/side_menu/presentation/side_menu.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,61 +13,50 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final GlobalKey<SliderDrawerState> _drawerKey =
-      GlobalKey<SliderDrawerState>();
+  DateTime currentMonth = DateTime.now();
 
-  String _title = 'WalletAR Lite - Home';
+  void _loadPreviousMonth() {
+    setState(() {
+      currentMonth = DateTime(currentMonth.year, currentMonth.month - 1, 1);
+    });
+  }
+
+  void _loadNextMonth() {
+    setState(() {
+      currentMonth = DateTime(currentMonth.year, currentMonth.month + 1, 1);
+    });
+  }
+
+  void _filterDate() {
+    // Lógica del filtro de fecha
+  }
+
+  void _filterStatus() {
+    // Lógica del filtro por estado de pago
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('WalletAR Lite | Home'),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () async {
-      //         context.go('/login');
-      //       },
-      //       icon: const Icon(Icons.logout),
-      //       tooltip: 'Cerrar sesión',
-      //     ),
-      //   ],
-      // ),
-      body: SliderDrawer(
-        key: _drawerKey,
-        appBar: SliderAppBar(
-          appBarColor: Colors.white,
-          title: Text(
-            _title,
-            style: const TextStyle(color: Colors.black, fontSize: 22),
-          ),
-        ),
-        slider: Container(
-          color: Colors.white,
-          child: SideMenu(
-            onItemSelected: (item) {
-              setState(() {
-                _title = item;
-              });
-              if (item == 'Cerrar Sesión') {
-                context.go('/login');
-              }
-              _drawerKey.currentState?.closeSlider();
+      drawer: const SideMenu(),
+      body: Column(
+        children: [
+          HomeHeader(
+            onFilterDate: _filterDate,
+            onFilterStatus: _filterStatus,
+            onPreviousMonth: _loadPreviousMonth,
+            onNextMonth: _loadNextMonth,
+            onMonthSelected: (selected) {
+              setState(() => currentMonth = selected);
             },
           ),
-        ),
-        child: Container(
-          color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.all(16.0),
+          const Expanded(
             child: ExpenseList(),
           ),
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.go('/add-expense');
-        },
+        onPressed: () => context.go('/add-expense'),
         child: const Icon(Icons.add),
       ),
     );

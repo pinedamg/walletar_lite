@@ -4,6 +4,7 @@ import 'package:walletar_lite/features/auth/auth_providers.dart';
 import 'package:walletar_lite/features/auth/presentation/login_screen.dart';
 import 'package:walletar_lite/features/auth/presentation/register_screen.dart';
 import 'package:walletar_lite/features/expenses/presentation/add_expense_screen.dart';
+import 'package:walletar_lite/features/expenses/presentation/edit_expense_screen.dart';
 import 'package:walletar_lite/features/home/presentation/home_screen.dart';
 
 final router = GoRouter(
@@ -24,6 +25,13 @@ final router = GoRouter(
     GoRoute(
       path: '/add-expense',
       builder: (context, state) => const AddExpenseScreen(),
+    ),
+    GoRoute(
+      path: '/edit-expense',
+      builder: (context, state) {
+        final expense = state.extra as Map<String, dynamic>;
+        return EditExpenseScreen(expense: expense);
+      },
     ),
   ],
   redirect: (context, state) {

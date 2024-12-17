@@ -1,13 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walletar_lite/features/expenses/data/firestore_service.dart';
 
-// Proveedor del servicio de Firestore
+// Firestore Service Provider
 final firestoreServiceProvider = Provider<FirestoreService>((ref) {
   return FirestoreService();
 });
 
-// Proveedor del flujo de gastos
-final expensesProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
-  final firestoreService = ref.watch(firestoreServiceProvider);
-  return firestoreService.getExpenses();
+// Provider para la lista de gastos
+final expensesProvider = StreamProvider((ref) {
+  final service = ref.read(firestoreServiceProvider);
+  return service.expensesCollection.snapshots().map(
+        (snapshot) => snapshot.docs.map((doc) {
+          return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
+        }).toList(),
+      );
 });
