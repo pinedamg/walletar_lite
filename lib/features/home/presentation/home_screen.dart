@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:walletar_lite/features/home/widgets/fab_menu.dart';
 import 'package:walletar_lite/features/home/widgets/home_header.dart';
 import 'package:walletar_lite/features/expenses/presentation/expense_list.dart';
 import 'package:walletar_lite/features/side_menu/presentation/side_menu.dart';
@@ -55,10 +57,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/add-expense'),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: const FabMenu(),
     );
   }
 }

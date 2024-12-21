@@ -33,9 +33,32 @@ final router = GoRouter(
         return EditExpenseScreen(expense: expense);
       },
     ),
+    // GoRoute(
+    //   path: '/incomes',
+    //   builder: (context, state) => const Scaffold(
+    //     body: Center(child: Text('Ingresos: Pantalla en construcción')),
+    //   ),
+    // ),
+    // GoRoute(
+    //   path: '/reports',
+    //   builder: (context, state) =>
+    //       const Text('Reportes: Pantalla en construcción'),
+    // ),
+    // GoRoute(
+    //   path: '/exchange-rate',
+    //   builder: (context, state) => const Scaffold(
+    //     body: Center(
+    //         child: Text('Cotización o Moneda: Pantalla en construcción')),
+    //   ),
+    // ),
+    // GoRoute(
+    //   path: '/settings',
+    //   builder: (context, state) => const Scaffold(
+    //     body: Center(child: Text('Configuraciones: Pantalla en construcción')),
+    //   ),
+    // ),
   ],
   redirect: (context, state) {
-    // Usamos el estado del usuario autenticado
     final authState = ProviderScope.containerOf(context)
         .read(authStateProvider)
         .asData
@@ -44,11 +67,11 @@ final router = GoRouter(
     final isLoggingIn =
         state.uri.toString() == '/login' || state.uri.toString() == '/register';
     if (authState == null && !isLoggingIn) {
-      return '/login'; // Redirigir al login si no está autenticado
+      return '/login';
     }
     if (authState != null && isLoggingIn) {
-      return '/'; // Redirigir a Home si ya está autenticado
+      return '/';
     }
-    return null; // Mantener la ruta actual
+    return null;
   },
 );
