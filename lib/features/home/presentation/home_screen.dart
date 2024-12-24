@@ -41,22 +41,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const SideMenu(),
-      body: Column(
-        children: [
-          HomeHeader(
-            onFilterDate: _filterDate,
-            onFilterStatus: _filterStatus,
-            onPreviousMonth: _loadPreviousMonth,
-            onNextMonth: _loadNextMonth,
-            onMonthSelected: (selected) {
-              setState(() => currentMonth = selected);
-            },
-          ),
-          const Expanded(
-            child: ExpenseList(),
-          ),
-        ],
+      appBar: HomeHeader(
+        onFilterDate: _filterDate,
+        onFilterStatus: _filterStatus,
+        onPreviousMonth: _loadPreviousMonth,
+        onNextMonth: _loadNextMonth,
+        onMonthSelected: (selected) {
+          setState(() => currentMonth = selected);
+        },
       ),
+      body: const ExpenseList(),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: const FabMenu(),
     );

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
+import 'package:walletar_lite/features/home/widgets/date_filter_dialog.dart';
+import 'package:walletar_lite/features/home/widgets/home_header_filter.dart';
+import 'package:walletar_lite/features/home/widgets/home_header_navigation.dart';
+import 'package:walletar_lite/features/home/widgets/payment_filter_dialog.dart';
 
-class HomeHeader extends StatefulWidget {
+class HomeHeader extends StatefulWidget implements PreferredSizeWidget {
   final VoidCallback onFilterDate;
   final VoidCallback onFilterStatus;
   final VoidCallback onPreviousMonth;
@@ -19,6 +23,9 @@ class HomeHeader extends StatefulWidget {
 
   @override
   State<HomeHeader> createState() => _HomeHeaderState();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(120); // Ajustar la altura
 }
 
 class _HomeHeaderState extends State<HomeHeader> {
@@ -40,69 +47,33 @@ class _HomeHeaderState extends State<HomeHeader> {
           actions: [
             IconButton(
               icon: const Icon(Icons.date_range),
-              onPressed: widget.onFilterDate,
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => const DateFilterDialog(),
+              ),
               tooltip: 'Filtrar por fecha',
             ),
             IconButton(
               icon: const Icon(Icons.filter_alt),
-              onPressed: widget.onFilterStatus,
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => const PaymentFilterDialog(),
+              ),
               tooltip: 'Filtrar por estado de pago',
             ),
           ],
         ),
 
         // Navegación Mensual
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_left),
-              onPressed: widget.onPreviousMonth,
-              tooltip: 'Mes anterior',
-            ),
-            GestureDetector(
-              onTap: () async {
-                DateTime? pickedMonth = await showMonthPicker(
-                  context: context,
-                  initialDate: selectedMonth,
-                );
-                if (pickedMonth != null) {
-                  setState(() => selectedMonth = pickedMonth);
-                  widget.onMonthSelected(pickedMonth);
-                }
-              },
-              child: Text(
-                '${selectedMonth.year} - ${_monthName(selectedMonth.month)}',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_right),
-              onPressed: widget.onNextMonth,
-              tooltip: 'Mes siguiente',
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: HomeHeaderNavigation(
+            onPreviousMonth: widget.onPreviousMonth,
+            onNextMonth: widget.onNextMonth,
+            currentMonth: selectedMonth,
+          ),
         ),
       ],
     );
-  }
-
-  String _monthName(int month) {
-    const months = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre'
-    ];
-    return months[month - 1];
   }
 }
