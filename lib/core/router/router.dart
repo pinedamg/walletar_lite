@@ -6,6 +6,7 @@ import 'package:walletar_lite/features/accounts/presentation/edit_account_screen
 import 'package:walletar_lite/features/auth/auth_providers.dart';
 import 'package:walletar_lite/features/auth/presentation/login_screen.dart';
 import 'package:walletar_lite/features/auth/presentation/register_screen.dart';
+import 'package:walletar_lite/features/exchange_rate/presentation/exchange_rate_screen.dart';
 import 'package:walletar_lite/features/expenses/presentation/add_expense_screen.dart';
 import 'package:walletar_lite/features/expenses/presentation/edit_expense_screen.dart';
 import 'package:walletar_lite/features/home/presentation/home_screen.dart';
@@ -50,6 +51,10 @@ final router = GoRouter(
         final account = state.extra as Map<String, dynamic>;
         return EditAccountScreen(account: account);
       },
+    ),
+    GoRoute(
+      path: '/exchange-rate',
+      builder: (context, state) => const ExchangeRateScreen(),
     ),
 
     // GoRoute(

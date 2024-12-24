@@ -30,7 +30,7 @@ class AccountsScreen extends ConsumerWidget {
               final account = accounts[index];
               return Slidable(
                 key: ValueKey(account['id']),
-                startActionPane: ActionPane(
+                endActionPane: ActionPane(
                   motion: const ScrollMotion(),
                   children: [
                     SlidableAction(

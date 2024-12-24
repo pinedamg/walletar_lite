@@ -20,6 +20,12 @@ class _AddAccountScreenState extends ConsumerState<AddAccountScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Agregar Cuenta'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/accounts');
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
