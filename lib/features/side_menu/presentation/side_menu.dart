@@ -45,6 +45,15 @@ class SideMenu extends ConsumerWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.account_balance_wallet),
+            title: const Text('Cuentas'),
+            onTap: () {
+              Navigator.pop(context);
+              context.go('/accounts');
+            },
+          ),
+
+          ListTile(
             leading: const Icon(Icons.attach_money),
             title: const Text('Ingresos'),
             onTap: () {

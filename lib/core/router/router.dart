@@ -1,5 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:walletar_lite/features/accounts/presentation/accounts_screen.dart';
+import 'package:walletar_lite/features/accounts/presentation/add_account_screen.dart';
+import 'package:walletar_lite/features/accounts/presentation/edit_account_screen.dart';
 import 'package:walletar_lite/features/auth/auth_providers.dart';
 import 'package:walletar_lite/features/auth/presentation/login_screen.dart';
 import 'package:walletar_lite/features/auth/presentation/register_screen.dart';
@@ -33,6 +36,22 @@ final router = GoRouter(
         return EditExpenseScreen(expense: expense);
       },
     ),
+    GoRoute(
+      path: '/accounts',
+      builder: (context, state) => const AccountsScreen(),
+    ),
+    GoRoute(
+      path: '/add-account',
+      builder: (context, state) => const AddAccountScreen(),
+    ),
+    GoRoute(
+      path: '/edit-account',
+      builder: (context, state) {
+        final account = state.extra as Map<String, dynamic>;
+        return EditAccountScreen(account: account);
+      },
+    ),
+
     // GoRoute(
     //   path: '/incomes',
     //   builder: (context, state) => const Scaffold(
