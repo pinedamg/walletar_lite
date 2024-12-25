@@ -67,11 +67,7 @@ class _HomeHeaderState extends State<HomeHeader> {
         // Navegación Mensual
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: HomeHeaderNavigation(
-            onPreviousMonth: widget.onPreviousMonth,
-            onNextMonth: widget.onNextMonth,
-            currentMonth: selectedMonth,
-          ),
+          child: HomeHeaderNavigation(),
         ),
       ],
     );

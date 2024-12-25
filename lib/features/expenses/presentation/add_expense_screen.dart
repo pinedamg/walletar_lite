@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
+import 'package:walletar_lite/features/accounts/accounts_providers.dart';
 import 'package:walletar_lite/features/expenses/data/firestore_service.dart';
 import 'package:intl/intl.dart';
 import 'package:walletar_lite/features/expenses/expenses_providers.dart';
@@ -122,6 +123,25 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                     prefixIcon: Icon(Icons.label),
                   ),
                 ),
+// Cuenta Asociada
+                FormBuilderDropdown<String>(
+                  name: 'accountId',
+                  decoration: const InputDecoration(
+                    labelText: 'Cuenta Asociada',
+                    prefixIcon: Icon(Icons.account_balance),
+                  ),
+                  items: ref.watch(accountsProvider).when(
+                        data: (accounts) => accounts
+                            .map((account) => DropdownMenuItem(
+                                  value: account.id,
+                                  child: Text(account.nombre),
+                                ))
+                            .toList(),
+                        loading: () => [],
+                        error: (error, stack) => [],
+                      ),
+                  validator: FormBuilderValidators.required(),
+                ),
 
                 // Descripción
                 FormBuilderTextField(
@@ -156,8 +176,14 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                         'tipo_pago': formData['tipo_pago'],
                         'label': formData['label'],
                         'descripcion': formData['descripcion'],
+                        'accountId': formData[
+                            'accountId'], // Aquí incluimos el ID de la cuenta
                         'created_at': DateTime.now().toIso8601String(),
                       };
+
+                      await ref
+                          .read(firestoreServiceProvider)
+                          .addExpense(expense);
 
                       await ref
                           .read(firestoreServiceProvider)
