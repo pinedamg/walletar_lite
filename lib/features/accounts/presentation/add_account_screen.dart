@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:walletar_lite/features/accounts/accounts_providers.dart';
+import 'package:walletar_lite/features/accounts/models/account_model.dart';
 
 class AddAccountScreen extends ConsumerStatefulWidget {
   const AddAccountScreen({Key? key}) : super(key: key);
@@ -73,9 +74,18 @@ class _AddAccountScreenState extends ConsumerState<AddAccountScreen> {
                 onPressed: () async {
                   if (_formKey.currentState?.saveAndValidate() ?? false) {
                     final formData = _formKey.currentState!.value;
+
+                    final account = Account(
+                      id: '', // El ID se genera automáticamente en Firestore
+                      nombre: formData['nombre'] as String,
+                      tipo: formData['tipo'] as String,
+                      etiqueta: formData['etiqueta'] as String,
+                      descripcion: formData['descripcion'] as String? ?? '',
+                    );
+
                     await ref
                         .read(accountServiceProvider)
-                        .createAccount(formData);
+                        .createAccount(account);
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Cuenta creada con éxito')),

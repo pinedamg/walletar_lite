@@ -1,36 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:walletar_lite/features/accounts/models/account_model.dart';
 
-class FirestoreService {
+class AccountFirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // Colección de cuentas
   CollectionReference get accountsCollection => _db.collection('accounts');
 
-  // Crear una cuenta
-  Future<void> createAccount(Map<String, dynamic> accountData) async {
-    try {
-      await accountsCollection.add(accountData);
-    } catch (e) {
-      print('Error al crear la cuenta: $e');
-    }
+  // Obtener lista de cuentas
+  Stream<List<Account>> getAccounts() {
+    return accountsCollection.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Account.fromFirestore(
+            doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+    });
+  }
+
+  // Crear una nueva cuenta
+  Future<void> createAccount(Account account) async {
+    await accountsCollection.add(account.toFirestore());
   }
 
   // Actualizar una cuenta existente
-  Future<void> updateAccount(
-      String id, Map<String, dynamic> accountData) async {
-    try {
-      await accountsCollection.doc(id).update(accountData);
-    } catch (e) {
-      print('Error al actualizar la cuenta: $e');
-    }
+  Future<void> updateAccount(String id, Account account) async {
+    await accountsCollection.doc(id).update(account.toFirestore());
   }
 
   // Eliminar una cuenta
   Future<void> deleteAccount(String id) async {
-    try {
-      await accountsCollection.doc(id).delete();
-    } catch (e) {
-      print('Error al eliminar la cuenta: $e');
-    }
+    await accountsCollection.doc(id).delete();
   }
 }

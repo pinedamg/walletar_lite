@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:walletar_lite/core/router/router.dart';
-import 'firebase_options.dart';
+import 'package:walletar_lite/core/firebase/firebase_initialization_provider.dart';
+import 'package:walletar_lite/core/app/app_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyAppBootstrap()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyAppBootstrap extends ConsumerWidget {
+  const MyAppBootstrap({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final firebaseInit = ref.watch(firebaseInitializationProvider);
+
+    return firebaseInit.when(
+      loading: () => const MaterialApp(
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+      error: (error, stack) => MaterialApp(
+        home: Scaffold(
+          body: Center(child: Text('Error inicializando Firebase: $error')),
+        ),
+      ),
+      data: (_) => const AppWidget(),
     );
   }
 }

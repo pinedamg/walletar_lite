@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:walletar_lite/features/accounts/accounts_providers.dart';
+import 'package:walletar_lite/features/accounts/models/account_model.dart';
 
 class EditAccountScreen extends ConsumerStatefulWidget {
-  final Map<String, dynamic> account;
+  final Account account; // Cambiado a tipo Account
 
   const EditAccountScreen({Key? key, required this.account}) : super(key: key);
 
@@ -22,16 +23,20 @@ class _EditAccountScreenState extends ConsumerState<EditAccountScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Editar Cuenta'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/accounts'),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FormBuilder(
           key: _formKey,
           initialValue: {
-            'nombre': widget.account['nombre'],
-            'tipo': widget.account['tipo'],
-            'etiqueta': widget.account['etiqueta'],
-            'descripcion': widget.account['descripcion'],
+            'nombre': widget.account.nombre,
+            'tipo': widget.account.tipo,
+            'etiqueta': widget.account.etiqueta,
+            'descripcion': widget.account.descripcion,
           },
           child: Column(
             children: [
@@ -75,20 +80,33 @@ class _EditAccountScreenState extends ConsumerState<EditAccountScreen> {
                 onPressed: () async {
                   if (_formKey.currentState?.saveAndValidate() ?? false) {
                     final formData = _formKey.currentState!.value;
+
+                    // Crear un objeto actualizado de tipo Account
+                    final updatedAccount = Account(
+                      id: widget.account.id,
+                      nombre: formData['nombre'] as String,
+                      tipo: formData['tipo'] as String,
+                      etiqueta: formData['etiqueta'] as String,
+                      descripcion: formData['descripcion'] as String? ?? '',
+                    );
+
                     await ref
                         .read(accountServiceProvider)
-                        .updateAccount(widget.account['id'], formData);
+                        .updateAccount(updatedAccount.id, updatedAccount);
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('Cuenta actualizada con éxito')),
+                        content: Text('Cuenta actualizada con éxito'),
+                      ),
                     );
                     context.go('/accounts');
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content:
-                              Text('Por favor, complete todos los campos')),
+                        content: Text(
+                          'Por favor, complete todos los campos',
+                        ),
+                      ),
                     );
                   }
                 },

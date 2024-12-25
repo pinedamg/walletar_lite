@@ -29,7 +29,7 @@ class AccountsScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               final account = accounts[index];
               return Slidable(
-                key: ValueKey(account['id']),
+                key: ValueKey(account.id),
                 endActionPane: ActionPane(
                   motion: const ScrollMotion(),
                   children: [
@@ -68,7 +68,7 @@ class AccountsScreen extends ConsumerWidget {
                         if (confirm == true) {
                           ref
                               .read(accountServiceProvider)
-                              .deleteAccount(account['id']);
+                              .deleteAccount(account.id);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Cuenta eliminada')),
                           );
@@ -82,9 +82,9 @@ class AccountsScreen extends ConsumerWidget {
                   ],
                 ),
                 child: ListTile(
-                  title: Text(account['nombre'] ?? 'Sin nombre'),
-                  subtitle: Text(account['descripcion'] ?? 'Sin descripción'),
-                  trailing: Text(account['tipo'] ?? 'Sin tipo'),
+                  title: Text(account.nombre ?? 'Sin nombre'),
+                  subtitle: Text(account.descripcion ?? 'Sin descripción'),
+                  trailing: Text(account.tipo ?? 'Sin tipo'),
                 ),
               );
             },

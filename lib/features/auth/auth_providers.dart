@@ -7,8 +7,8 @@ final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService();
 });
 
-// Estado del usuario autenticado
 final authStateProvider = StreamProvider<User?>((ref) {
-  ref.watch(authServiceProvider);
-  return FirebaseAuth.instance.authStateChanges();
+  final auth = FirebaseAuth.instance;
+  auth.setPersistence(Persistence.LOCAL);
+  return auth.authStateChanges();
 });

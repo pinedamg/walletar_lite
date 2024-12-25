@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:walletar_lite/features/accounts/models/account_model.dart';
 import 'package:walletar_lite/features/accounts/presentation/accounts_screen.dart';
 import 'package:walletar_lite/features/accounts/presentation/add_account_screen.dart';
 import 'package:walletar_lite/features/accounts/presentation/edit_account_screen.dart';
 import 'package:walletar_lite/features/auth/auth_providers.dart';
+import 'package:walletar_lite/features/auth/data/auth_notifier_provider.dart';
 import 'package:walletar_lite/features/auth/presentation/login_screen.dart';
 import 'package:walletar_lite/features/auth/presentation/register_screen.dart';
 import 'package:walletar_lite/features/exchange_rate/presentation/exchange_rate_screen.dart';
@@ -48,7 +51,7 @@ final router = GoRouter(
     GoRoute(
       path: '/edit-account',
       builder: (context, state) {
-        final account = state.extra as Map<String, dynamic>;
+        final account = state.extra as Account;
         return EditAccountScreen(account: account);
       },
     ),
@@ -56,46 +59,38 @@ final router = GoRouter(
       path: '/exchange-rate',
       builder: (context, state) => const ExchangeRateScreen(),
     ),
-
-    // GoRoute(
-    //   path: '/incomes',
-    //   builder: (context, state) => const Scaffold(
-    //     body: Center(child: Text('Ingresos: Pantalla en construcción')),
-    //   ),
-    // ),
-    // GoRoute(
-    //   path: '/reports',
-    //   builder: (context, state) =>
-    //       const Text('Reportes: Pantalla en construcción'),
-    // ),
-    // GoRoute(
-    //   path: '/exchange-rate',
-    //   builder: (context, state) => const Scaffold(
-    //     body: Center(
-    //         child: Text('Cotización o Moneda: Pantalla en construcción')),
-    //   ),
-    // ),
-    // GoRoute(
-    //   path: '/settings',
-    //   builder: (context, state) => const Scaffold(
-    //     body: Center(child: Text('Configuraciones: Pantalla en construcción')),
-    //   ),
-    // ),
+    GoRoute(
+      path: '/incomes',
+      builder: (context, state) => const Scaffold(
+        body: Center(child: Text('Ingresos: Pantalla en construcción')),
+      ),
+    ),
+    GoRoute(
+      path: '/reports',
+      builder: (context, state) =>
+          const Text('Reportes: Pantalla en construcción'),
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const Scaffold(
+        body: Center(child: Text('Configuraciones: Pantalla en construcción')),
+      ),
+    ),
   ],
   redirect: (context, state) {
-    final authState = ProviderScope.containerOf(context)
-        .read(authStateProvider)
-        .asData
-        ?.value;
+    final user = ProviderScope.containerOf(context).read(authNotifierProvider);
 
     final isLoggingIn =
         state.uri.toString() == '/login' || state.uri.toString() == '/register';
-    if (authState == null && !isLoggingIn) {
+
+    if (user == null && !isLoggingIn) {
       return '/login';
     }
-    if (authState != null && isLoggingIn) {
+
+    if (user != null && isLoggingIn) {
       return '/';
     }
+
     return null;
   },
 );
