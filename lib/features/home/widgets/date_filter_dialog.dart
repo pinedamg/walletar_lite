@@ -16,6 +16,7 @@ class DateFilterDialog extends ConsumerWidget {
             title: const Text('Hoy'),
             onTap: () {
               ref.read(dateFilterProvider.notifier).state = 'Hoy';
+              ref.read(currentMonthProvider.notifier).state = DateTime.now();
               Navigator.of(context).pop();
             },
           ),
@@ -23,6 +24,7 @@ class DateFilterDialog extends ConsumerWidget {
             title: const Text('Semana Actual'),
             onTap: () {
               ref.read(dateFilterProvider.notifier).state = 'Semana Actual';
+              ref.read(currentMonthProvider.notifier).state = DateTime.now();
               Navigator.of(context).pop();
             },
           ),
@@ -31,6 +33,7 @@ class DateFilterDialog extends ConsumerWidget {
             onTap: () {
               ref.read(dateFilterProvider.notifier).state =
                   'Hasta el 2do Jueves del mes';
+              ref.read(currentMonthProvider.notifier).state = DateTime.now();
               Navigator.of(context).pop();
             },
           ),
@@ -39,6 +42,7 @@ class DateFilterDialog extends ConsumerWidget {
             onTap: () {
               ref.read(dateFilterProvider.notifier).state =
                   'Todo el Mes Corriente';
+              ref.read(currentMonthProvider.notifier).state = DateTime.now();
               Navigator.of(context).pop();
             },
           ),
