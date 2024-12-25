@@ -13,6 +13,7 @@ import 'package:walletar_lite/features/exchange_rate/presentation/exchange_rate_
 import 'package:walletar_lite/features/expenses/presentation/add_expense_screen.dart';
 import 'package:walletar_lite/features/expenses/presentation/edit_expense_screen.dart';
 import 'package:walletar_lite/features/home/presentation/home_screen.dart';
+import 'package:walletar_lite/features/reports/presentation/reports_screen.dart';
 
 final router = GoRouter(
   initialLocation: '/login',
@@ -67,8 +68,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/reports',
-      builder: (context, state) =>
-          const Text('Reportes: Pantalla en construcción'),
+      builder: (context, state) => const ReportsScreen(),
     ),
     GoRoute(
       path: '/settings',
