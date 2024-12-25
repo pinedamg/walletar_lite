@@ -28,10 +28,7 @@ class ExpenseItem extends ConsumerWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: ExpansionTile(
-          leading: Icon(
-            isPaid ? Icons.check_circle : Icons.warning_amber_rounded,
-            color: isPaid ? Colors.green : Colors.red,
-          ),
+          leading: _getIconForExpense(expense),
           // tileColor: isPaid ? Colors.green[100] : Colors.red[100],
           title: Text(expense['label'] ?? 'Sin etiqueta'),
           subtitle: Text(
@@ -50,6 +47,20 @@ class ExpenseItem extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Icon _getIconForExpense(Map<String, dynamic> expense) {
+    final montoPagado = expense['monto_pagado'] ?? 0.0;
+    final montoTotal = expense['monto_total'] ?? 0.0;
+
+    if (montoPagado >= montoTotal) {
+      return Icon(Icons.check_circle, color: Colors.green);
+    } else if (montoPagado > 0 && montoPagado < montoTotal) {
+      return Icon(Icons.timeline,
+          color: const Color.fromARGB(255, 255, 153, 0));
+    } else {
+      return Icon(Icons.warning_amber_rounded, color: Colors.red);
+    }
   }
 
   // Acciones del lado izquierdo (Eliminar y Editar)
